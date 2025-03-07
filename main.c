@@ -1,10 +1,9 @@
 #include <math.h>
 #include <raylib.h>
 #include <raymath.h>
+#include <stdlib.h>
 
 #define MAX_POINTS 10000
-
-// TODO: Add functionality to change the parameters in the simulation.
 
 Vector3 step_lorenz(Vector3 init_vec, const float sigma, const float rho,
                     const float beta, float dt) {
@@ -16,10 +15,16 @@ Vector3 step_lorenz(Vector3 init_vec, const float sigma, const float rho,
                    init_vec.z + (dz * dt)};
 }
 
-int main(void) {
-  float sigma = 12.0;
+int main(int argc, char *argv[]) {
+  float sigma = 10.0;
   float rho = 28.0;
   float beta = 8.0 / 3.0;
+
+  if (argc >= 4) {
+    sigma = atof(argv[1]);
+    rho = atof(argv[2]);
+    beta = atof(argv[3]);
+  }
 
   float dt = 0.00833333333f;
   Vector3 points[MAX_POINTS] = {0};
@@ -41,7 +46,6 @@ int main(void) {
 
   InitWindow(1000, 1000, "Lorenz attractor");
   SetTargetFPS(120);
-  /* DisableCursor(); */
 
   while (!WindowShouldClose()) {
     if (points_length < MAX_POINTS) {
@@ -68,6 +72,9 @@ int main(void) {
     EndMode3D();
     DrawText(TextFormat("FPS: %d", GetFPS()), 6, 6, 30, RAYWHITE);
     DrawText(TextFormat("POINTS: %d", points_length), 200, 6, 30, RAYWHITE);
+    DrawText(TextFormat("Sigma %f", sigma), 6, 964, 30, RAYWHITE);
+    DrawText(TextFormat("Rho %f", rho), 356, 964, 30, RAYWHITE);
+    DrawText(TextFormat("Beta %f", beta), 706, 964, 30, RAYWHITE);
     EndDrawing();
 
     dt = GetFrameTime();
